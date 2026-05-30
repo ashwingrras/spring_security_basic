@@ -19,8 +19,11 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /*
-   SecurityFilterChain:
+   SecurityFilterChain: flow
     1. Client Request
 
     2. Tomcat / Embedded Server
@@ -53,7 +56,6 @@ import org.springframework.security.web.SecurityFilterChain;
     13. AuthorizationFilter
 
 
-
  */
 
 @Configuration
@@ -63,17 +65,21 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(
             PasswordEncoder passwordEncoder) {
 
+        // user1234 : fhioahgiohafhigh29492489294
+        System.out.println("password encode "+passwordEncoder.encode("user1234"));
+        // user 1
         UserDetails user =
                 User.builder()
-                        .username("user")
+                        .username("ashish")
                         .password(
                                 passwordEncoder.encode("user1234"))
-                        .roles("USER")
+                        .roles("USER","MANAGER")
                         .build();
 
+        // user 2
         UserDetails admin =
                 User.builder()
-                        .username("admin")
+                        .username("ashwin")
                         .password(
                                 passwordEncoder.encode("admin1234"))
                         .roles("ADMIN")
@@ -96,6 +102,12 @@ public class SecurityConfig {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // //user   //product
+                //  /public : all url / api allow ex: /public/abc, /public/products
+                //  /admin   : /admin/user   /admin/data /admin/product
+                //  /user       : /user/data /user/profile
+                //  /product  ;   /product/info  /product/quantity
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**")
